@@ -1,3 +1,4 @@
+#include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>          //ESP8266 Core WiFi Library (you most likely already have this in your sketch)
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
@@ -112,15 +113,17 @@ void loop()
     reconnect();
   }
   client.loop();
+  char JSONMessage[] ="{\"SensorType\":\"Temperature\", \"Value\": 10}";
   long now = millis();
   if (now - lastMsg > 2000) 
   {
     lastMsg = now;
     ++value;
-    snprintf (msg, 75, "MSG_BLACKSPEKTRO_DID_001_%ld", value);
+    //snprintf (msg, 75, "MSG_BLACKSPEKTRO_DID_001_%ld", value);
+
     Serial.print("Publish message: ");
     Serial.println(msg);
-    client.publish("blackspektro/outtopic", msg);
+    client.publish("blackspektro/outtopic", JSONMessage);
     if(value>20000)
       value=0;
   }
